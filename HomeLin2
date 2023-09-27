@@ -1,0 +1,35 @@
+   64  cat > file1.txt           //  создание файла , далее тет же пишем содержание файла 
+   65  cat > file2.txt
+   66  cat file1.txt >> file2.txt // объединили 2 файла , все теперь во 2 файле ( в конец добавляется)
+   67  file2.txt
+   68  cat file2.txt
+   69  touch file3.txt file4.txt // создаем несколько файлов 
+   70  mkdir Dir                 // создаем директорию 
+   71  mv file*.txt Dir/         // помещаем файлы туда 
+   72  ls -l                     // просмотр содержимого дирктории 
+   73  cd /Dir
+   74  cd ./Dir                  //смена директории 
+   75  ls -l
+   76  cd ./
+   77  cd /
+   78  rm -r Dir                // удаление директории 
+   79  cd ~
+   80  rm -r Dir
+   81  ls -l
+   82  rm file*.txt
+   83  echo "Cодержание1" > file1.txt // создали + заполнили 
+   84  cp file1.txt file2.txt         //копируем  содержимое файла1 в файл2
+   85  ln -s file1.txt file3.txt      // создаем символическую ссылку 
+   86  ln file1.txt file4.txt         // создаем жесткую ссылку 
+   87  ls -i file*.txt                // узнаем айноды 
+   88  rm -r file1.txt
+   89  cat file2.txt
+   90  cat file1.txt
+   91  cat file3.txt
+   92  cat file4.txt
+   93  mv file 2.txt renamed-file22.txt  // переименование файлов 
+   94  mv file2.txt renamed-file22.txt
+   95  ln -s renamed-file22.txt symlink.txt
+   96  mkdir MyDir
+   97  mv symlink.txt another-symlink.txt mydir/
+   98  history                           // посмотрели список команд 
