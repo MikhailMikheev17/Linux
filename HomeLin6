@@ -1,0 +1,93 @@
+Задание
+
+• Установить Nginx и настроить его на работу с PHP-FPM.
+
+• Установить Apache. Настроить обработку PHP. Добиться одновременной работы с Nginx.
+
+• Настроить схему обратного прокси для Nginx (динамика - на Apache).
+
+• Установить MySQL. Создать новую базу данных и таблицу в ней.
+
+
+Решение
+1)
+sudo apt install curl                          установка curl
+sudo apt install nginx                         установил nginx
+sudo ss –ntlp                                  проверка портов и сокетов 
+curl localhost                                 проверка работы по локальному адресу
+Когда перешел по ip, то увидел приветственное окно 
+sudo apt install php8.1-fpm                    установка пакета PHP-FPM
+sudo nano /etc/nginx/sites-enabled/default открыл файл default:
+#location ~ \.php$ подключил конфигурации location php
+fastcgi_pass unix:/run/php/php8.1-fpm.sock     смена пути к сокету
+sudo systemctl reload nginx                    reload сервера
+проверил Server API перейдя по ip/info.php  (работа с файлом info.php  в следующем задании)
+
+2)
+sudo apt install apache2                       установка Apache
+sudo ss –ntlp                                  
+apachectl –t                                   проверика syntax
+systemctl status apache2                       проверка статуса
+sudo nano /etc/apache2/ports.conf              открытие файлф ports, изменение на  Listen 8080
+sudo systemctl start apache2                   запуск Apache
+systemctl status apache2                       
+ps afx проверил запущенные процессы
+sudo nano /etc/apache2/sites-enabled/000-default.conf              запуск файл, изменение  <VirtualHost*:8080>
+sudo systemctl reload apache2                  reload сервера
+curl localhost:8080                            проверка работы сервера
+sudo apt install php8.1 libapache2-mod-php8.1  установка PHP с модулем Apache
+cd /var/www/html/ 
+cat > info.php через sudo su                   создание файла с содержимым:
+
+<?php
+phpinfo();                                                                                                                                    ?>
+sudo nano /etc/nginx/sites-enabled/default     открытие файла default
+
+#location ~ \.php$ отключил location php
+sudo systemctl reload nginx                    reload сервера
+
+перейдя по ip/info.php  приветственное окно
+
+3)
+sudo nano /etc/nginx/sites-enabled/default                        открытие файлф default, добавление конфигурации Nginx для Reverse proxy:
+
+location / {
+proxy_pass http://localhost:8080;
+proxy_set_header Host $host;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Real-IP $remote_addr;
+} 
+
+location ~ \.php$ {
+include snippets/fastcgi-php.conf;
+root /var/www/html;
+fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+}
+
+location ~* ^.+.(jpg|jpeg|gif|png|ico|css|zip|pdf|txt|tar|js)$ {
+include /etc/nginx/static.conf;
+} 
+sudo nginx –t                                                      проверка syntax
+
+sudo systemctl reload nginx                                        reload сервера перейдя по ip приветственное окно
+
+4)
+sudo apt install mysql-server-8.0                                  установка MySQL
+
+sudo ss –ntlp                                                      проверка сокета MySQL (порт: 3306)
+
+sudo mysql                                                         вход в консоль MySQL
+
+CREATE DATABASE mayBD;                                             создание своей БД
+
+show databases;                                                    проверка/показ списка БД
+
+use mayBD;                                                         переход в БД
+
+CREATE TABLE test(i INT);                                          создание таблицы
+
+INSERT INTO test (i) VALUES (1),(2),(3),(4);                       создание записи в таблице
+
+show tables;                                                       просмотр таблицы
+
+SELECT * FROM test;                                                проверка содержимого таблицы test
